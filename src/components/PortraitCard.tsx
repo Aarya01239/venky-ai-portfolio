@@ -7,7 +7,7 @@ interface PortraitCardProps {
 }
 
 export const PortraitCard: React.FC<PortraitCardProps> = ({ variant = 'hero', className = '' }) => {
-  const [customPhoto, setCustomPhoto] = useState<string | null>(null);
+ const [customPhoto, setCustomPhoto] = useState<string | null>('/venky-profile.jpeg');
   const [isHovered, setIsHovered] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
