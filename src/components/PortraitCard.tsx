@@ -79,7 +79,7 @@ export const PortraitCard: React.FC<PortraitCardProps> = ({ variant = 'hero', cl
           {customPhoto ? (
             <img
               id={`portrait-img-${variant}`}
-           src="/WhatsApp Image 2026-09-06 at 23.05.35.jpeg"
+           src="/venky-profile.jpeg"
               alt="Venkata Kumar Pulapa"
               className="w-full h-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
             />
