@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
 import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
@@ -524,6 +525,44 @@ app.post('/api/contact', (req, res) => {
     success: true,
     message: 'Thank you for reaching out! Venkata Kumar Pulapa will respond to your email promptly.'
   });
+});
+
+// Profile photo check & upload endpoints
+app.get('/api/profile-photo-status', (req, res) => {
+  const publicPath = path.join(process.cwd(), 'public', 'profile.png');
+  const exists = fs.existsSync(publicPath);
+  res.json({ exists });
+});
+
+app.post('/api/upload-profile', (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) {
+      return res.status(400).json({ error: 'No image data provided' });
+    }
+
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    const publicDir = path.join(process.cwd(), 'public');
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
+
+    const publicPath = path.join(publicDir, 'profile.png');
+    fs.writeFileSync(publicPath, buffer);
+
+    const distDir = path.join(process.cwd(), 'dist');
+    if (fs.existsSync(distDir)) {
+      fs.writeFileSync(path.join(distDir, 'profile.png'), buffer);
+    }
+
+    console.log(`[Profile Upload] Successfully wrote ${buffer.length} bytes to ${publicPath}`);
+    res.json({ success: true, message: 'Profile photo saved successfully!' });
+  } catch (err: any) {
+    console.error('Error saving profile photo:', err);
+    res.status(500).json({ error: 'Failed to save photo', details: err.message });
+  }
 });
 
 // Setup Vite development middleware or production static serving
