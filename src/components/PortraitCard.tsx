@@ -79,7 +79,7 @@ const [customPhoto, setCustomPhoto] = useState<string | null>('/venky-profile.jp
           {customPhoto ? (
             <img
               id={`portrait-img-${variant}`}
-           src="/venky-profile.jpeg"
+           src="/profile.png"
               alt="Venkata Kumar Pulapa"
               className="w-full h-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
             />
