@@ -54,9 +54,36 @@ export const AiLabSection: React.FC<AiLabSectionProps> = ({ onOpenAskVenky, onSe
       if (res.ok) {
         const data = await res.json();
         setExplorerResult(data.result);
+      } else {
+        throw new Error('Fallback needed');
       }
     } catch (err) {
-      console.warn('Explorer error:', err);
+      const qLower = q.toLowerCase();
+      if (qLower.includes('churn') || qLower.includes('lifetime') || qLower.includes('rfm')) {
+        setExplorerResult({
+          recommendedProjectIds: ['customer-analytics-rfm', 'ai-voc-intelligence'],
+          explanation: 'These projects directly analyze customer retention, purchase intervals, and churn risk using SQL & Python.',
+          suggestedSkills: ['RFM Segmentation', 'SQL CTEs', 'Python Churn Modeling', 'Power BI']
+        });
+      } else if (qLower.includes('generative') || qLower.includes('ai') || qLower.includes('nlp')) {
+        setExplorerResult({
+          recommendedProjectIds: ['ai-voc-intelligence', 'ecommerce-bi'],
+          explanation: 'These projects integrate Gemini AI and NLP models to extract sentiment and synthesize unstructured customer feedback.',
+          suggestedSkills: ['Google Gemini API', 'NLP Sentiment Clustering', 'SQL', 'Prompt Engineering']
+        });
+      } else if (qLower.includes('product') || qLower.includes('saas') || qLower.includes('funnel')) {
+        setExplorerResult({
+          recommendedProjectIds: ['product-analytics-journey', 'ga4-funnel-journey'],
+          explanation: 'Focuses on feature adoption, user journey drop-offs, and behavioral funnel optimization.',
+          suggestedSkills: ['Funnel Analysis', 'GA4 Events', 'SQL Window Functions', 'Cohort Retention']
+        });
+      } else {
+        setExplorerResult({
+          recommendedProjectIds: ['customer-analytics-rfm', 'product-analytics-journey'],
+          explanation: 'Highlights core analytical rigor across complex SQL CTEs, window functions, and business KPIs.',
+          suggestedSkills: ['SQL Window Functions', 'Python Pandas', 'Cohort Analysis', 'Power BI']
+        });
+      }
     } finally {
       setExplorerLoading(false);
     }

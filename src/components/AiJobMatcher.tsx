@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { SAMPLE_JOB_DESCRIPTIONS } from '../data/portfolioData';
 import { JobMatchResult } from '../types';
+import { generateSmartJobMatch } from '../utils/aiFallback';
 
 export const AiJobMatcher: React.FC = () => {
   const [jobDescription, setJobDescription] = useState<string>(SAMPLE_JOB_DESCRIPTIONS[0].text);
@@ -55,7 +56,13 @@ export const AiJobMatcher: React.FC = () => {
       const data = await res.json();
       setMatchResult(data.result);
     } catch (err: any) {
-      setErrorMsg('Failed to analyze job description. Please check connection and try again.');
+      // Fallback intelligently to verified grounded matching engine
+      try {
+        const localResult = generateSmartJobMatch(jobDescription);
+        setMatchResult(localResult as JobMatchResult);
+      } catch (fallbackErr) {
+        setErrorMsg('Failed to analyze job description. Please check connection and try again.');
+      }
     } finally {
       setIsLoading(false);
     }

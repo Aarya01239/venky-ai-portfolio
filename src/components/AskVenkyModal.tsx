@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, X, Sparkles, User, ShieldCheck, Loader2 } from 'lucide-react';
+import { generateSmartAskVenkyReply } from '../utils/aiFallback';
 
 interface AskVenkyModalProps {
   isOpen: boolean;
@@ -75,12 +76,14 @@ export const AskVenkyModal: React.FC<AskVenkyModalProps> = ({ isOpen, onClose })
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (err: any) {
+      // Fallback seamlessly using verified local ground truth
+      const fallbackText = generateSmartAskVenkyReply(query);
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          text: 'I am currently unable to retrieve a response from the verified AI backend. Please try again shortly.'
+          text: fallbackText
         }
       ]);
     } finally {
